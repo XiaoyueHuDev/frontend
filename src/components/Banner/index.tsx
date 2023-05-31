@@ -1,33 +1,31 @@
-import React, { useState, useRef ,useEffect } from "react";
+import React, { useState, useRef ,useEffect, useCallback } from "react";
 import ImgContainer from './ImgContainer/index'
 import DoSwitchDot from './SwitchDot/index'
+import type {BannerProps} from './bannerType'
 import './index.scss'
-// type bannerProps = {
-//   imgSrc: string[]; // 图片数组
-//   imgWidth: number; //图片宽度
-//   imgHeight: number; // 图片高度
-// };
-let  timer=0;
 
-export default function Index(props) {
+let  timer: any=0;
+
+export default function Index(props:BannerProps) {
   const { imgSrc, imgWidth, imgHeight ,duration,autoTimer} = props;
-  const [currentIndex, setCurrentIndex] = useState(0)
- // const [imgRef, setImgRef] = useState(null)
- const imgRef=useRef(null)
- const handleToImg = (index) => {
+  const [currentIndex, setCurrentIndex] = useState<number>(0)
+ const imgRef=useRef<any>(null)
+ 
+ /**
+  * 调用子组件 移动到哪张图片
+  */
+ const handleToImg = useCallback((index:number) => {
   setCurrentIndex(index)
   imgRef.current.switchTo(index)
-  // console.log(index, "+===index",imgRef)
-}
+},[imgRef?.current?.switchTo])
 
  useEffect(()=>{
   clearInterval(timer)
     timer= setInterval(()=>{
-       const cur=(currentIndex+1)%(imgSrc.length+1)
-      
-       handleToImg(cur) // 3
+       const cur=(currentIndex+1)%(imgSrc.length+1) 
+       handleToImg(cur) 
     },autoTimer)
- },[currentIndex,handleToImg])
+ },[currentIndex,handleToImg,autoTimer])
  
 
   // const getImgRef = (el) => {
@@ -54,10 +52,5 @@ export default function Index(props) {
       curIndex={currentIndex}
       onChange={handleToImg}
     />
-   {/* <div  onClick={()=>{
-        handleToImg(3)
-   }}>
-    dsdsd
-   </div> */}
   </div>
 }

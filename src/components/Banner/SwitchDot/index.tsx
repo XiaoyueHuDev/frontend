@@ -1,13 +1,13 @@
 import React, { useMemo, } from 'react'
+import type {DotProps} from '../bannerType'
 import "./index.scss"
 
- function Index(props) {
+ function Index(props:DotProps) {
    
-
     const { total, curIndex, onChange } = props;
     const renderDotSpan = useMemo(()=>{
         const curNumber=curIndex===total?0:curIndex
-        const array=[];
+        const array =[];
         for (let index = 0; index < total; index++) {
 
             array.push(<span 
@@ -20,7 +20,7 @@ import "./index.scss"
             
         }
         return array
-    },[total,curIndex])
+    },[total,curIndex,onChange])
     return (
         <div className='dot-container'>
             {renderDotSpan}
