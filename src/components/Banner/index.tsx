@@ -79,13 +79,18 @@ export default function Index(props: BannerProps) {
 
   const prev = useCallback(() => {
     let index = currentIndex - 1;
- 
     if (index < 0) {
+      // 3 
       index=imgSrc.length-1;
       setCurrentIndex(index)
-      imgRef.current.setCuttentDistance(bannerLayout.bannerWidth*imgSrc.length)
+      imgRef.current.setCuttentDistance(bannerLayout.bannerWidth*-imgSrc.length)
+      setTimeout(()=>{
+        handleToImg(index);
+      })
+    }else{
+       handleToImg(index);
     }
-    handleToImg(index);
+    
 
   }, [currentIndex, imgSrc,handleToImg,bannerLayout]);
 
@@ -100,7 +105,6 @@ export default function Index(props: BannerProps) {
       }}
       onMouseEnter={(e) => {
         e.stopPropagation()
-        console.log(timer, "==timer");
         clearInterval(timer);
       }}
       onMouseLeave={(e) => {

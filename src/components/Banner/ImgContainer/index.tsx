@@ -53,16 +53,9 @@ function Index(
    * 切换到第几张图片  经过一段时间动画完成
    */
   const switchTo = useCallback((index: number) => {
-    // 点的是第几张
-    // if (index < 0) {
-    //   setCurrentIndex(imgSrc.length);
-    //   setCuttentDistance(-bannerWidth*imgSrc.length)
-    //   return
-    // } else if (index > imgSrc.length) {
-    //   index = imgSrc.length - 1;
-    // }
+
+   
     const targetLeft = -index * bannerWidth;
-    
     animate({
       from:cuttentDistance, 
       to:targetLeft, 
