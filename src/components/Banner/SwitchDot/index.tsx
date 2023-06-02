@@ -6,7 +6,7 @@ import "./index.scss"
    
     const { total, curIndex, onChange } = props;
     const renderDotSpan = useMemo(()=>{
-        const curNumber=curIndex===total?0:curIndex
+        const curNumber=curIndex%total
         const array =[];
         for (let index = 0; index < total; index++) {
 

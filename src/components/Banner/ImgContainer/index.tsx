@@ -5,34 +5,33 @@ import React, {
   forwardRef,
   useCallback,
 } from "react";
-import type { BannerProps } from "../bannerType";
-import "./index.scss";
-// type imgProps = {
-//   imgSrc: string[]; // 图片数组
-//   imgWidth: number; //图片宽度
-//   imgHeight: number; // 图片高度
-// };
+import type { ImgContainerProps } from "../bannerType";
+import {animate} from '../util/comon'
 
-const tick = 16;
-let timer: any = null;
+import "./index.scss";
+
 function Index(
-  props: BannerProps & {
+  props: ImgContainerProps & {
     setCurrentIndex: any;
   },
   ref: any
 ) {
   const {
     imgSrc,
-    imgWidth,
-    imgHeight,
     duration = 3000,
     setCurrentIndex,
+    bannerLayout,
+    bannerLayout:{
+      bannerWidth,
+      bannerHeight
+    }
   } = props;
 
+  const [cuttentDistance, setCuttentDistance] = useState(0);
   useImperativeHandle(ref, () => ({
     switchTo: switchTo,
+    setCuttentDistance:setCuttentDistance
   }));
-  const [imgMR, setImgMR] = useState(0);
 
   const getImgSrc = useMemo(() => {
     return imgSrc.map((item) => (
@@ -41,13 +40,13 @@ function Index(
         alt=""
         key={item}
         style={{
-          width: imgWidth,
-          height: imgHeight,
+          width: bannerWidth,
+          height: bannerHeight,
           //float:'left'
         }}
       />
     ));
-  }, [imgSrc]);
+  }, [imgSrc,bannerLayout]);
   /**
    *
    * @param {*} index
@@ -55,48 +54,51 @@ function Index(
    */
   const switchTo = useCallback((index: number) => {
     // 点的是第几张
-    if (index < 0) {
-      index = 0;
-    } else if (index > imgSrc.length) {
-      index = imgSrc.length - 1;
-    }
-    // 1. 根据index 计算div 的最终margetLeft
-    const targetLeft = -index * imgWidth;
-    // 2. 计算在 一定间隔内 需要移动多少次
-    const times = Math.ceil(duration / tick);
-    let curTimes = 0;
-    let curLeft = imgMR;
-    const totalDis = targetLeft - imgMR;
-    // 3. 每次移动的距离
-    const dis = totalDis / times;
-    clearInterval(timer);
-    // console.log(curLeft, "====curLeft")
-    timer = setInterval(() => {
-      curTimes++;
-      curLeft += dis;
-      setImgMR(curLeft);
+    // if (index < 0) {
+    //   setCurrentIndex(imgSrc.length);
+    //   setCuttentDistance(-bannerWidth*imgSrc.length)
+    //   return
+    // } else if (index > imgSrc.length) {
+    //   index = imgSrc.length - 1;
+    // }
+    const targetLeft = -index * bannerWidth;
+    
+    animate({
+      from:cuttentDistance, 
+      to:targetLeft, 
+      time:duration, 
+      onMove:(val:number)=>{
+        setCuttentDistance(val)
+      }, 
 
-      if (curTimes === times) {
-      //  console.log(index, "+==index==", imgSrc.length);
-        if (index === imgSrc.length) {
-          //  setCurrentIndex(0)
-          setImgMR(0);
-          setCurrentIndex(0);
-        } else {
-          setImgMR(targetLeft);
+      onEnd:()=>{
+        setCuttentDistance(targetLeft)
+        if(index===imgSrc.length){
+           setCurrentIndex(0)
+           setCuttentDistance(0)
         }
-        clearInterval(timer);
-      }
-    }, tick);
-  }, [imgMR]);
-  // console.log(imgMR,"===imgMR==")
+       
+      }, 
+      tick:13, 
+    })
+    // let curTimes = 0;
+    // let curLeft = imgMR;
+    // const totalDis = targetLeft - imgMR;
+    // // 3. 每次移动的距离
+    // const dis = totalDis / times;
+  
+    // console.log(curLeft, "====curLeft")
+    
+  }, [cuttentDistance,animate,bannerLayout,setCurrentIndex,setCuttentDistance,imgSrc]);
+
+
   return (
     <div
       className="img-container"
       style={{
-        width: (imgSrc.length + 1) * imgWidth,
-        height: imgHeight,
-        marginLeft: imgMR + "px",
+        width: (imgSrc.length + 1) * bannerWidth ,
+        height: bannerHeight,
+        marginLeft: cuttentDistance + "px",
       }}
     >
       {getImgSrc}
@@ -105,8 +107,8 @@ function Index(
           src={imgSrc[0]}
           key={imgSrc.length + 1}
           style={{
-            width: imgWidth,
-            height: imgHeight,
+            width: bannerWidth,
+            height: bannerHeight,
             //float:'left'
           }}
         />

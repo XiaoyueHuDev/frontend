@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import Banner from "./index";
 import airpods from "../../assets/airpods.png";
 import iphone from "../../assets/iphone.png";
@@ -6,13 +6,15 @@ import tablet from "../../assets/tablet.png";
 
 function App() {
   return (
-      <Banner 
-      imgSrc={[airpods,iphone,tablet]} 
-      imgWidth={520} 
-      imgHeight={300} 
-      duration={2000}  
-      autoTimer={3000}   
+    <div
+      style={{
+        height: "400px",
+      }}
+    >
+      <Banner
+       imgSrc={[airpods, iphone, tablet]} 
       />
+    </div>
   );
 }
 
